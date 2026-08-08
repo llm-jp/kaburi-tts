@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>KABURI-TTS: Two-channel Japanese Spoken Dialogue TTS</title>
+<style>
+  :root { --accent: #7a3e9d; --fg: #222; --muted: #666; --line: #ddd; }
+  * { box-sizing: border-box; }
+  body { font-family: "Helvetica Neue", Arial, "Hiragino Kaku Gothic ProN", Meiryo, sans-serif;
+         color: var(--fg); margin: 0; line-height: 1.6; }
+  .wrap { max-width: 1200px; margin: 0 auto; padding: 24px 20px 60px; }
+  header { text-align: center; padding: 36px 12px 8px; }
+  h1 { font-size: 1.9em; margin: 0 0 4px; }
+  h1 .sub { display: block; font-size: 0.55em; color: var(--muted); font-weight: normal; }
+  .lang-toggle { position: absolute; top: 14px; right: 18px; font-size: 0.9em; }
+  .lang-toggle a { color: var(--accent); text-decoration: none; margin: 0 4px; cursor: pointer; }
+  .lang-toggle a.active { font-weight: bold; text-decoration: underline; }
+  .authors { color: var(--muted); margin: 8px 0 2px; }
+  .links { margin: 18px 0 8px; }
+  .links a { display: inline-block; margin: 4px 6px; padding: 8px 18px; border-radius: 20px;
+             background: #333; color: #fff; text-decoration: none; font-size: 0.92em; }
+  .links a.disabled { background: #aaa; pointer-events: none; }
+  h2 { border-bottom: 2px solid var(--accent); padding-bottom: 4px; margin-top: 44px; font-size: 1.3em; }
+  .abstract { background: #f7f4fa; border-radius: 8px; padding: 16px 20px; }
+  .note { color: var(--muted); font-size: 0.92em; }
+  .tablewrap { overflow-x: auto; margin: 14px 0 26px; }
+  table.samples { border-collapse: collapse; width: 100%; min-width: 720px; table-layout: fixed; }
+  table.samples th, table.samples td { border: 1px solid var(--line); padding: 8px 6px; text-align: center; vertical-align: top; }
+  table.samples th { background: #f0ebf5; font-size: 0.88em; }
+  table.samples td.rowhead { background: #fafafa; font-size: 0.88em; }
+  table.samples th:first-child, table.samples td.rowhead { width: 120px; }
+  #table-voices { table-layout: auto; }
+  #table-voices th:first-child { width: auto; }
+  table.samples audio { width: 100%; min-width: 150px; max-width: 260px; }
+  .grp { display: inline-block; font-size: 0.78em; border-radius: 10px; padding: 0 8px; margin-top: 4px; background: #e8e0f0; color: #555; }
+  details.dtext { text-align: left; margin-top: 6px; font-size: 0.85em; color: #444; }
+  details.dtext pre { white-space: pre-wrap; margin: 4px 0 0; font-family: inherit; background: #fafafa; padding: 8px; border-radius: 6px; }
+  .voicegrid { display: flex; flex-wrap: wrap; gap: 12px; margin: 14px 0 26px; }
+  .voicecard { border: 1px solid var(--line); border-radius: 8px; padding: 10px 14px; text-align: center; background: #fafafa; flex: 1 1 240px; max-width: 300px; }
+  .voicecard .vname { font-size: 0.9em; font-weight: bold; margin-bottom: 6px; }
+  .voicecard audio { width: 100%; }
+  footer { margin-top: 60px; padding-top: 16px; border-top: 1px solid var(--line); color: var(--muted); font-size: 0.88em; }
+</style>
+</head>
+<body>
+<div class="lang-toggle"><a id="btn-ja" onclick="setLang('ja')">日本語</a> / <a id="btn-en" onclick="setLang('en')">English</a></div>
+<div class="wrap">
+
+<header>
+  <h1>KABURI-TTS<span class="sub" data-i18n="subtitle"></span></h1>
+  <div class="authors" data-i18n="authors"></div>
+  <div class="authors" data-i18n="affil"></div>
+  <div class="links">
+    <a class="disabled" href="#" data-i18n="link_paper"></a>
+    <a href="https://huggingface.co/llm-jp/kaburi-tts" data-i18n="link_model"></a>
+    <a href="https://github.com/llm-jp/kaburi-tts" data-i18n="link_code"></a>
+  </div>
+</header>
+
+<h2 data-i18n="h_abstract"></h2>
+<div class="abstract" data-i18n="abstract"></div>
+<p class="note" data-i18n="privacy_note"></p>
+
+<div id="voices-section">
+<h2 data-i18n="h_voices"></h2>
+<p data-i18n="voices_desc"></p>
+<div class="tablewrap"><table class="samples" id="table-voices" style="min-width:0"></table></div>
+</div>
+
+<h2 data-i18n="h_evala"></h2>
+<p data-i18n="evala_desc"></p>
+<div class="tablewrap"><table class="samples" id="table-chunk"></table></div>
+
+<h2 data-i18n="h_evalb"></h2>
+<p data-i18n="evalb_desc"></p>
+<div class="tablewrap"><table class="samples" id="table-text"></table></div>
+
+<footer>
+  <div data-i18n="ack"></div>
+  <div style="margin-top:6px" data-i18n="contact"></div>
+</footer>
+</div>
+
+<script src="samples.js?v=1784522236"></script>
+<script>
+const I18N = {
+ ja: {
+  subtitle: "2チャネル日本語対話音声合成",
+  authors: "（著者リストは論文公開時に更新予定）",
+  affil: "国立情報学研究所 大規模言語モデル研究開発センター（NII LLMC）対話WG",
+  link_paper: "📑 論文 (準備中)",
+  link_model: "🤗 モデル",
+  link_code: "💻 コード",
+  h_abstract: "概要",
+  abstract: "KABURI-TTS は、2 話者の日本語対話音声を左右 2 チャネルで同時に生成する対話音声合成システムです。rectified flow に基づく音響モデルが、音素系列・発話アクティビティ・話者参照音声を条件として各話者チャネルの音声を生成し、タイミング予測器が対話テキストから相槌・重なり（かぶり）・間を含む発話タイミングを予測します。両者を組み合わせることで、テキストのみから重なりのある自然な対話音声を合成できます。",
+  privacy_note: "※ 本ページの音声はすべて本システムによる合成音声です。話者参照には JVS corpus（東京大学）の音声を使用しており、アカデミック・非商用研究の範囲で公開しています。参照話者の声の商用利用・キャラクターボイス的な利用はできません（詳細は LICENSE-audio.md）。",
+  h_voices: "話者参照に使用した音声",
+  voices_desc: "以下は JVS corpus（東京大学 猿渡研究室）の話者音声から作成した参照サンプルです。下のデモでは、これらの声から作成した話者参照を使用しています。JVS の音声は非商用研究・個人利用に限り利用可能です。",
+  h_evala: "デモ 1: 実対話のタイミング再現（30 秒チャンク入力）",
+  evala_desc: "収録対話の書き起こし（音素系列）を入力とした合成の比較です。「GT タイミング」は実対話のタイミング（重なり・間）をそのまま使う oracle 条件、「予測タイミング」はタイミング予測器の出力を使う提案構成です。発話内容は収録対話の書き起こしに基づきます。",
+  h_evalb: "デモ 2: テキスト入力 E2E 合成",
+  evalb_desc: "対話テキストのみから合成した比較です（タイミングの正解は存在しません）。台本は書き言葉的な対話を同梱のテキストコンバータで話し言葉（短いターン・相槌・フィラー）に自動変換したものです。「予測タイミング」「統計配置」はいずれも提案システムの構成で、前者はタイミング予測器、後者は予測器を使わず学習データの統計のみでタイミングを決めます。「MOSS-TTSD」「FireRedTTS-2」は比較用の対話音声合成システムです（同じ JVS 話者の参照音声で voice clone）。「入力テキスト」を開くと合成に使った対話全文を確認できます。",
+  input_text: "入力テキスト",
+  sample: "サンプル",
+  voice: "声",
+  ack: "本成果は、国立情報学研究所 大規模言語モデル研究開発センター（NII LLMC）対話WGの活動として作成されたものです。（謝辞・研究費情報は論文公開時に更新予定）ベースモデルとして <a href=\"https://huggingface.co/Aratako/Irodori-TTS-500M-v2\">Irodori-TTS-500M-v2</a> および <a href=\"https://huggingface.co/Aratako/Semantic-DACVAE-Japanese-32dim\">Semantic-DACVAE-Japanese-32dim</a>（Aratako 氏）、テキストコンバータのベースとして <a href=\"https://huggingface.co/llm-jp/llm-jp-3-440m\">llm-jp-3</a> を利用しています。比較音声は <a href=\"https://huggingface.co/OpenMOSS-Team/MOSS-TTSD-v1.0\">OpenMOSS-Team/MOSS-TTSD-v1.0</a> および <a href=\"https://huggingface.co/FireRedTeam/FireRedTTS2\">FireRedTeam/FireRedTTS2</a> によります。話者参照には JVS corpus を使用しています: S. Takamichi et al., \"JVS corpus: free Japanese multi-speaker voice corpus,\" arXiv:1908.06248, 2019.",
+  contact: "連絡先: （公開時に更新）",
+  conds: {
+    kaburi_pred: "KABURI-TTS（予測タイミング）",
+    kaburi_stat: "KABURI-TTS（統計配置）",
+    kaburi_gt: "KABURI-TTS（GT タイミング）",
+    irodori_stat: "カスケード TTS（統計配置）",
+    moss_ttsd: "MOSS-TTSD",
+    firered_tts2: "FireRedTTS-2"
+  }
+ },
+ en: {
+  subtitle: "Two-channel Japanese Spoken Dialogue TTS",
+  authors: "(Author list will be updated upon paper release)",
+  affil: "Dialogue WG, Research and Development Center for Large Language Models (LLMC), National Institute of Informatics (NII)",
+  link_paper: "📑 Paper (coming soon)",
+  link_model: "🤗 Model",
+  link_code: "💻 Code",
+  h_abstract: "Abstract",
+  abstract: "KABURI-TTS is a spoken dialogue synthesis system that generates two-speaker Japanese conversations as two simultaneous audio channels. A rectified-flow acoustic model generates each speaker channel conditioned on phone sequences, utterance activity, and speaker reference audio, while a timing predictor infers utterance timing — including backchannels, overlaps (kaburi), and pauses — from the dialogue text. Together they synthesize natural overlapping conversations from text alone.",
+  privacy_note: "Note: all audio on this page is synthesized by this system. Speaker references are derived from the JVS corpus (The University of Tokyo) and are published within its academic / non-commercial research terms; the reference speakers' voices must not be used commercially or as character voices (see LICENSE-audio.md).",
+  h_voices: "Reference voices",
+  voices_desc: "The samples below are speaker references built from JVS corpus speakers (Saruwatari Lab, The University of Tokyo) and are used as speaker references in the demos below. JVS audio is available for non-commercial research and personal use only.",
+  h_evala: "Demo 1: Reproducing real-dialogue timing (30-s chunk input)",
+  evala_desc: "Synthesis from transcripts (phone sequences) of recorded dialogues. \"GT timing\" is an oracle that uses the original dialogue timing (overlaps and pauses); \"predicted timing\" uses the timing predictor (proposed). The spoken content is based on transcripts of the recorded dialogues.",
+  h_evalb: "Demo 2: End-to-end synthesis from text",
+  evalb_desc: "Synthesis from dialogue text only (no ground-truth timing exists). The scripts are written-style dialogues automatically converted into spoken style (short turns, backchannels, fillers) by the bundled text converter. \"Predicted timing\" and \"statistical placement\" are both configurations of the proposed system: the former uses the timing predictor, the latter places utterances using training-data statistics without the predictor. \"MOSS-TTSD\" and \"FireRedTTS-2\" are dialogue TTS systems included for comparison (voice-cloned with the same JVS speaker references). Open \"input text\" to see the full dialogue used for synthesis.",
+  input_text: "input text",
+  sample: "Sample",
+  voice: "Voice",
+  ack: "This work was developed as part of the Dialogue Working Group of the Research and Development Center for Large Language Models (LLMC), National Institute of Informatics (NII). (Acknowledgements and funding information will be updated upon paper release.) It builds on <a href=\"https://huggingface.co/Aratako/Irodori-TTS-500M-v2\">Irodori-TTS-500M-v2</a> and <a href=\"https://huggingface.co/Aratako/Semantic-DACVAE-Japanese-32dim\">Semantic-DACVAE-Japanese-32dim</a> by Aratako as base models, and <a href=\"https://huggingface.co/llm-jp/llm-jp-3-440m\">llm-jp-3</a> as the base of the text converter. Comparison audio is generated with <a href=\"https://huggingface.co/OpenMOSS-Team/MOSS-TTSD-v1.0\">OpenMOSS-Team/MOSS-TTSD-v1.0</a> and <a href=\"https://huggingface.co/FireRedTeam/FireRedTTS2\">FireRedTeam/FireRedTTS2</a>. Speaker references use the JVS corpus: S. Takamichi et al., \"JVS corpus: free Japanese multi-speaker voice corpus,\" arXiv:1908.06248, 2019.",
+  contact: "Contact: (to be updated)",
+  conds: {
+    kaburi_pred: "KABURI-TTS (predicted timing)",
+    kaburi_stat: "KABURI-TTS (statistical placement)",
+    kaburi_gt: "KABURI-TTS (GT timing)",
+    irodori_stat: "Cascade TTS (statistical placement)",
+    moss_ttsd: "MOSS-TTSD",
+    firered_tts2: "FireRedTTS-2"
+  }
+ }
+};
+
+const A_CONDS = ["kaburi_gt", "kaburi_pred"];
+const B_CONDS = ["kaburi_pred", "kaburi_stat", "moss_ttsd", "firered_tts2"];
+let LANG = new URLSearchParams(location.search).get("lang") === "en" ? "en" : "ja";
+
+function setLang(l) {
+  LANG = l;
+  const url = new URL(location);
+  url.searchParams.set("lang", l);
+  history.replaceState(null, "", url);
+  render();
+}
+
+function render() {
+  const t = I18N[LANG];
+  document.documentElement.lang = LANG;
+  document.getElementById("btn-ja").classList.toggle("active", LANG === "ja");
+  document.getElementById("btn-en").classList.toggle("active", LANG === "en");
+  document.querySelectorAll("[data-i18n]").forEach(el => {
+    const v = t[el.dataset.i18n];
+    if (v !== undefined) el.innerHTML = v;  // i18n 文字列は自前資産のみ (リンク許可)
+  });
+  const vs = window.SAMPLES.voices || [];
+  document.getElementById("voices-section").style.display = vs.length ? "" : "none";
+  if (vs.length) buildVoicesTable("table-voices", vs);
+  buildTable("table-chunk", window.SAMPLES.chunk_input, A_CONDS);
+  buildTable("table-text", window.SAMPLES.text_input, B_CONDS);
+}
+
+function buildVoicesTable(id, voices) {
+  const t = I18N[LANG];
+  const tbl = document.getElementById(id);
+  const src = v => (typeof v === "string" ? v : v.src);
+  const label = (v, i) => (typeof v === "string" ? `${t.voice} ${i + 1}`
+                           : `${t.voice} ${i + 1} <span class="grp">${v.label}</span>`);
+  let html = "";
+  for (let r = 0; r < voices.length; r += 3) {
+    const row = voices.slice(r, r + 3);
+    html += "<tr>" + row.map((v, j) => `<th>${label(v, r + j)}</th>`).join("") + "</tr>";
+    html += "<tr>" + row.map(v =>
+      `<td><audio controls preload="none" src="${src(v)}" style="width:100%;min-width:220px"></audio></td>`).join("") + "</tr>";
+  }
+  tbl.innerHTML = html;
+}
+
+function buildTable(id, samples, conds) {
+  const t = I18N[LANG];
+  const tbl = document.getElementById(id);
+  let html = "<tr><th></th>" + conds.map(c => `<th>${t.conds[c]}</th>`).join("") + "</tr>";
+  samples.forEach((s, i) => {
+    let head = `${t.sample} ${i + 1}`;
+    if (s.voices) {
+      head += `<br><span class="grp">${t.voice}: ${s.voices}</span>`;
+    }
+    if (s.text) {
+      head += `<details class="dtext"><summary>${t.input_text}</summary><pre>${(Array.isArray(s.text) ? s.text : String(s.text).split("\n")).join("\n")}</pre></details>`;
+    }
+    html += `<tr><td class="rowhead">${head}</td>` + conds.map(c =>
+      `<td><audio controls preload="none" src="${s.audio[c]}"></audio></td>`).join("") + "</tr>";
+  });
+  tbl.innerHTML = html;
+}
+
+render();
+</script>
+</body>
+</html>

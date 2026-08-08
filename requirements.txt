@@ -1,0 +1,27 @@
+# KABURI-TTS dependencies (inference + training)
+# Tested with Python 3.10+ / CUDA 12.8 wheels (torch 2.10).
+# For CUDA wheels: pip install torch torchaudio --index-url https://download.pytorch.org/whl/cu128
+
+torch>=2.10.0
+torchaudio>=2.10.0
+torchcodec>=0.10.0
+numpy>=2.0
+pyyaml>=6.0
+transformers<5
+sentencepiece>=0.1.99,<0.2
+peft>=0.18.0
+safetensors>=0.7.0
+huggingface-hub>=0.34.0,<1.0
+soundfile>=0.12.0
+einops>=0.8
+tqdm>=4.67
+
+# Irodori-TTS (base single-speaker TTS, MIT) is vendored in this repository as
+# irodori_tts/ (upstream commit 2708d3c, unmodified; upstream packaging cannot be
+# pip-installed). License: irodori_tts/LICENSE.
+
+# DACVAE codec (facebookresearch)
+dacvae @ git+https://github.com/facebookresearch/dacvae
+
+# Training-only extras
+wandb>=0.17.0

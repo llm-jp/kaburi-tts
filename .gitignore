@@ -1,0 +1,37 @@
+__pycache__/
+*.pyc
+*.pt
+*.safetensors
+*.wav
+# bundled synthetic-voice test pack (voices are VoiceDesign-generated, no real person)
+!assets/test_refpack/**/*.pt
+runs/
+logs/
+out/
+refpack/
+.venv/
+venv/
+*.egg-info/
+.DS_Store
+hf_upload/
+
+# --- release audit (2026-07-20) ---
+# internal working documents (not for public release)
+RELEASE_REVIEW_*.md
+DIAGNOSIS_*.md
+CLAUDE_CODE_*.md
+# internal listening-audit / repair-workflow tooling (hardcoded internal paths)
+# scripts は公開ホワイトリスト方式 (内部 workflow / 学習系は非公開。
+# 学習コードは将来コーパスとセットで別途配布予定)
+scripts/*
+!scripts/kaburi_cli.py
+!scripts/synth_from_text.py
+!scripts/synth_with_predictor.py
+!scripts/make_ref_pack.py
+!scripts/refine_ref_pack.py
+!scripts/convert_dialog.py
+!scripts/check_spontaneity.py
+# internal codec listening test
+docs/audio_test/
+# bundled naturalness models (small, required by kaburi_cli defaults)
+!assets/g2p/*.pt

@@ -1,0 +1,98 @@
+# KABURI timing predictor config.
+#
+# Trains only on normal dialogue chunks.  Event-mix and old baseline branches
+# are intentionally absent.
+#
+# NOTE: training requires the private preprocessed corpus (manifests, per-utt
+# timing records, per-chunk latents).  These are NOT included in this
+# repository; the paths below are placeholders for internal use.  Inference
+# only needs phone_vocab_path / phone_class_table_path / class_weight_path,
+# which are bundled under assets/.
+
+data:
+  train_manifest: "data/splits/train.jsonl"            # private (internal only)
+  valid_manifest: "data/splits/valid.jsonl"            # private (internal only)
+  test_seen_manifest: "data/splits/test_seen.jsonl"    # private (internal only)
+  test_unseen_manifest: "data/splits/test_unseen.jsonl"  # private (internal only)
+  utt_timing_jsonls:                                   # private (internal only)
+    - "data/utt_timing/train.jsonl"
+    - "data/utt_timing/valid_seen.jsonl"
+    - "data/utt_timing/valid_unseen_mixed_B.jsonl"
+  phone_vocab_path: "assets/phone_vocab.json"
+  utt_manifest_path: null                              # private (internal only)
+
+context:
+  phone_vocab_size: 79
+  phone_emb_dim: 128
+  utt_boundary_emb_dim: 16
+  speaker_emb_dim: 64
+  channel_emb_dim: 16
+  n_speakers_max: 100
+  max_collapsed_seq_len: 512
+
+timing:
+  T_frames: 750
+  max_timing_seq_len: 1024
+  tau_soft_boundary: 2.0
+
+model:
+  phone_vocab_size: 80
+  n_speakers_max: 100
+  hidden: 192
+  layers: 2
+  heads: 4
+  ff_dim: 768
+  dropout: 0.1
+  max_pos: 1024
+  use_text: true
+  text_vocab_size: 100000
+  text_emb_dim: 64
+  max_utt_text_len: 64
+  use_utt_context: true
+  use_dialog_order_context: true
+  utt_context_layers: 1
+  max_dialog_pos: 256
+
+loss:
+  lambda_phone: 1.0
+  lambda_sil: 1.0
+  lambda_any_gap: 1.0
+  lambda_total_len: 1.0
+  lambda_utt_len: 0.7
+  lambda_utt_speed: 0.25
+  lambda_gap_l1: 0.15
+  lambda_frame_state: 1.0
+  lambda_frame_tail: 0.20
+  tail_start_frac: 0.55
+  gap_l1_norm_frames: 100.0
+  utt_speed_norm_frames: 10.0
+
+train_full:
+  max_steps: 12000
+  batch_size_per_rank: 32
+  lr: 5.0e-5
+  weight_decay: 0.01
+  warmup_steps: 600
+  grad_clip_norm: 1.0
+  num_workers: 2
+  eval_every: 500
+  valid_batches: 4
+
+train_sanity:
+  max_steps: 200
+  batch_size_per_rank: 8
+  lr: 5.0e-5
+  weight_decay: 0.01
+  warmup_steps: 50
+  grad_clip_norm: 1.0
+  num_workers: 1
+  eval_every: 10000
+  valid_batches: 2
+
+checkpoint:
+  out_dir: "runs/predictor"
+  step_save_steps: [500, 1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000, 10000, 11000, 12000]
+
+log:
+  dir: "logs"
+  console_log_interval: 100

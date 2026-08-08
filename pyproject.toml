@@ -1,0 +1,41 @@
+[project]
+name = "kaburi-tts"
+version = "1.0.0"
+description = "KABURI-TTS: two-channel Japanese spoken-dialogue TTS (acoustic model + timing predictor + text converter)"
+readme = "README.md"
+# sentencepiece 0.1.x (llm-jp tokenizer 互換) の wheel が無いため 3.12+ は除外
+requires-python = ">=3.10,<3.12"
+dependencies = [
+    "torch>=2.10.0",
+    "torchaudio>=2.10.0",
+    "torchcodec>=0.10.0",
+    "numpy>=2.0",
+    "pyyaml>=6.0",
+    "transformers<5",
+    "sentencepiece>=0.1.99,<0.2",
+    "peft>=0.18.0",
+    "safetensors>=0.7.0",
+    "huggingface-hub>=0.34.0,<1.0",
+    "soundfile>=0.12.0",
+    "einops>=0.8",
+    "tqdm>=4.67",
+    # DACVAE codec (facebookresearch). irodori_tts は同梱 (vendored, MIT — irodori_tts/LICENSE)
+    "dacvae @ git+https://github.com/facebookresearch/dacvae",
+]
+
+[project.optional-dependencies]
+train = ["wandb>=0.17.0"]
+
+# リポジトリ自体は install せず、依存環境のみ構築する (scripts/ を uv run で直接実行する想定)
+[tool.uv]
+package = false
+
+# CUDA 12.8 wheel を PyTorch index から取得 (それ以外の依存は PyPI)
+[tool.uv.sources]
+torch = [{ index = "pytorch-cu128" }]
+torchaudio = [{ index = "pytorch-cu128" }]
+
+[[tool.uv.index]]
+name = "pytorch-cu128"
+url = "https://download.pytorch.org/whl/cu128"
+explicit = true

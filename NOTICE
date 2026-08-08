@@ -1,0 +1,17 @@
+KABURI-TTS
+Copyright 2026 Dialogue WG, Research and Development Center for Large Language Models (LLMC), National Institute of Informatics
+
+This repository includes demo audio whose speaker references are derived from
+the JVS corpus:
+
+  S. Takamichi, K. Mitsui, Y. Saito, T. Koriyama, N. Tanji, and H. Saruwatari,
+  "JVS corpus: free Japanese multi-speaker voice corpus," arXiv:1908.06248, 2019.
+  https://sites.google.com/site/shinnosuketakamichi/research-topics/jvs_corpus
+
+JVS-derived audio is available for academic / non-commercial research and
+personal use only, and is NOT covered by the Apache License 2.0 of this
+repository. See docs/LICENSE-audio.md.
+
+This repository vendors the irodori_tts package from Irodori-TTS
+(https://github.com/Aratako/Irodori-TTS, commit 2708d3c, MIT License, unmodified).
+See irodori_tts/LICENSE.
