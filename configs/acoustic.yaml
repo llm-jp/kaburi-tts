@@ -1,0 +1,73 @@
+# KABURI-TTS acoustic model config
+#
+# 推論で使用する構成。
+
+model:
+  base_checkpoint: "Aratako/Irodori-TTS-500M-v2"
+  base_config: "assets/irodori_train_500m_v2.yaml"   # = repo 相対 (上流 Irodori-TTS 由来)
+  phone_vocab_size: 79
+  phone_emb_dim: 128
+  phone_proj_hidden_dim: 512
+  use_phone_temporal_conv: true
+  phone_temporal_conv_kernel: 5
+  use_activity_condition: true
+  use_phone_condition: true
+  use_interaction_state: true
+  interaction_state_vocab: 10
+  text_scale: 0.0
+  silence_weight: 0.05
+
+phone_condition:
+  mode: "soft"
+  class_size: 8
+  class_emb_dim: 32
+  hidden_dim: 512
+  temporal_conv_kernel: 5
+  zero_init_last: true
+  boundary_radius: 5
+
+# 対話ドメイン適応 (= 検証済フル構成)
+capacity:
+  unfreeze_layer_norm: true
+  unfreeze_last_n_blocks: 6
+  unfreeze_io: true
+  l2sp_enabled: true
+  l2sp_lambda: 1.0e-4
+
+lora:
+  enabled: true
+  r: 256
+  alpha: 256
+  dropout: 0.05
+  bias: "none"
+  target_modules_regex: "^base\\.blocks\\.\\d+\\.(attention\\.(wq|wk|wv|wo|wk_text|wv_text|wk_speaker|wv_speaker|gate)|mlp\\.(w1|w2|w3))$"
+
+# timing aux (= activity/onset/offset/overlap/turn_switch BCE、 phone path 維持の補助)
+timing_aux:
+  enabled: true
+  loss_weights:
+    activity: 0.1
+    onset: 0.1
+    offset: 0.1
+    overlap: 0.1
+    turn_switch: 0.1
+  positive_weights: {}
+  turn_switch_window_frames: 13
+  boundary_soft_width: 1
+
+# KABURI 固有: phone 再注入 + conditioning dropout (= CFG 用)
+kaburi:
+  phone_reinject_blocks: [2, 4, 6, 8, 10]
+  cond_dropout:
+    phone_p: 0.15
+    speaker_p: 0.10
+    both_p: 0.01
+
+data:
+  phone_vocab_path: "assets/phone_vocab.json"
+
+infer:
+  num_steps: 32
+  output_sample_rate: 48000
+  cfg_scale: 2.5             # = classifier-free guidance (= 明瞭性・明るさの主レバー)
+  cfg_speaker_scale: 1.0

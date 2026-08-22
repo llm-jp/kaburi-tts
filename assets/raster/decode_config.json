@@ -1,0 +1,21 @@
+{
+  "sil_threshold": 0.85,
+  "op_threshold": 0.5,
+  "del_threshold": 0.6,
+  "sub_threshold": 0.4,
+  "safe_sub_only": false,
+  "structured_margin_per_phone": 0.25,
+  "edit_verifier": {
+    "enabled": true,
+    "prior_weight": 0.26,
+    "threshold": 0.0,
+    "smoothing": 0.5,
+    "sha256": "76c0a484028c5a4af8bddb1be0738f53b07b842700b43625dbef4702a98fafe3"
+  },
+  "activity_gate": {
+    "enabled": true,
+    "pad_frames": 2,
+    "fade_ms": 40.0,
+    "fps": 25
+  }
+}

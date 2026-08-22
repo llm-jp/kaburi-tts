@@ -1,0 +1,1 @@
+{"chunk_id": "template_chunk_000", "dialogue_id": "template", "chunk_idx": 0, "speaker_A": "DEMO_M1", "speaker_B": "DEMO_F1", "chunk_path": "chunks/template.pt", "ref_A_path": "refs/DEMO_M1_ref_000.pt", "ref_B_path": "refs/DEMO_F1_ref_000.pt", "usable_chunk": true}

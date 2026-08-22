@@ -1,0 +1,1 @@
+{"chunk_id": "template_chunk_000", "speaker_A": "SPK_A", "speaker_B": "SPK_B", "n_utts": 1, "utterances": [{"utt_id": "template_u000", "speaker": "A", "text": "", "phone_ids": [2, 3, 4], "n_phones": 3, "gt_start_frame": 10, "gt_end_frame": 20, "gt_region_len": 10, "gt_phone_durations": [3, 4, 3], "gt_inter_utt_gap": 0}]}

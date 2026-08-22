@@ -1,0 +1,23 @@
+# Raw Irodori-TTS cascade baseline (utterance-by-utterance synthesis + placement).
+# Used by scripts/synth_from_text.py --mode irodori_stat and kaburi_tts/placement/irodori.py.
+
+paths:
+  base_checkpoint_hf: "Aratako/Irodori-TTS-500M-v2"
+  base_checkpoint_local: ""
+  codec_repo: "Aratako/Semantic-DACVAE-Japanese-32dim"
+
+synth:
+  num_steps: 40
+  cfg_scale_text: 3.0
+  cfg_scale_speaker: 5.0
+  # Generation budget (not the final utterance length): budget = clamp(D*margin + pad, min, max).
+  # Audio is endpoint-trimmed after synthesis and placed using the trimmed length.
+  seconds_margin: 1.3
+  seconds_pad: 0.8
+  seconds_min: 1.2
+  seconds_max: 8.0
+  seed: 42
+  # InferenceRuntime does not cast the reference latent to the model dtype on the
+  # ref_wav path, so keep everything fp32.
+  model_precision: "fp32"
+  codec_precision: "fp32"

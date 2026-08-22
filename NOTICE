@@ -1,0 +1,39 @@
+KABURI-TTS
+Copyright 2026 Dialogue WG, Research and Development Center for Large Language Models (LLMC), National Institute of Informatics
+
+This repository includes demo audio whose speaker references are derived from
+the JVS corpus:
+
+  S. Takamichi, K. Mitsui, Y. Saito, T. Koriyama, N. Tanji, and H. Saruwatari,
+  "JVS corpus: free Japanese multi-speaker voice corpus," arXiv:1908.06248, 2019.
+  https://sites.google.com/site/shinnosuketakamichi/research-topics/jvs_corpus
+
+JVS-derived audio is available for academic / non-commercial research and
+personal use only, and is NOT covered by the Apache License 2.0 of this
+repository. See docs/LICENSE-audio.md.
+
+The bundled G2P dictionary (assets/g2p/japanese_mfa.dict) is an unmodified copy of
+the Montreal Forced Aligner "japanese_mfa" dictionary v3.0.0 by Michael McAuliffe
+and Morgan Sonderegger (2024), distributed under CC BY 4.0
+(https://creativecommons.org/licenses/by/4.0/).
+
+  Upstream: https://github.com/MontrealCorpusTools/mfa-models/releases/tag/dictionary-japanese_mfa-v3.0.0
+  Docs:     https://mfa-models.readthedocs.io/
+
+  The bundled file is byte-identical to the released japanese_mfa.dict
+  (SHA-256 4a0c66760576e4b7f3748f3169e7d5217c0135f857f0b5d34637c93a85fd1c91);
+  no changes were made. It is the probabilistic variant of the dictionary, which
+  carries the pronunciation and silence probabilities published upstream.
+
+Synthesis downloads the Semantic-DACVAE-Japanese-32dim weights (MIT License) at
+run time; they are not redistributed here. The DACVAE code installed as a
+dependency is licensed under Apache License 2.0.
+
+The acoustic model is derived from Irodori-TTS-500M-v2 (MIT License) and the
+text converter from llm-jp/llm-jp-3-440m (Apache License 2.0).
+
+This repository vendors the irodori_tts package from Irodori-TTS
+(https://github.com/Aratako/Irodori-TTS, commit 2708d3c, MIT License, unmodified).
+The bundled training config assets/irodori_train_500m_v2.yaml is likewise an
+unmodified copy of configs/train_500m_v2.yaml from the same commit and is covered
+by the same MIT License. See irodori_tts/LICENSE.
