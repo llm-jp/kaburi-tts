@@ -4,7 +4,7 @@
 
 [![Japanese](https://img.shields.io/badge/README-Japanese-red.svg)](README.md)
 
-📑 Paper (APSIPA ASC 2026, to appear) | [🤗 Model](https://huggingface.co/llm-jp/kaburi-tts) | [🖥️ Demo](https://llm-jp.github.io/kaburi-tts)
+[📑 Paper](https://arxiv.org/abs/2609.07200) (APSIPA ASC 2026, to appear) | [🤗 Model](https://huggingface.co/llm-jp/kaburi-tts) | [🖥️ Demo](https://llm-jp.github.io/kaburi-tts)
 
 **KABURI-TTS** is a spoken dialogue synthesis system that generates two-speaker Japanese conversations as two simultaneous audio channels. It reproduces the timing structure characteristic of conversation — backchannels, overlaps (**kaburi** in Japanese), and pauses — from text alone.
 
@@ -158,7 +158,7 @@ The code and model weights are released under the [Apache License 2.0](LICENSE) 
 
 ## Citation
 
-This work will appear as the following paper (**to appear**):
+This work has been accepted at APSIPA ASC 2026 (**to appear**). A preprint is available as [arXiv:2609.07200](https://arxiv.org/abs/2609.07200).
 
 > Ryuichiro Higashinaka, Shinnosuke Takamichi, and Tetsuji Ogawa. "KABURI-TTS: Phoneme-Keyed Activity-conditioned Bi-channel Utterance Rendering for Interaction." In *Proceedings of the 2026 Asia Pacific Signal and Information Processing Association Annual Summit and Conference (APSIPA ASC)*, 2026. (to appear)
 
@@ -168,6 +168,10 @@ This work will appear as the following paper (**to appear**):
   author    = {Higashinaka, Ryuichiro and Takamichi, Shinnosuke and Ogawa, Tetsuji},
   booktitle = {Proceedings of the 2026 Asia Pacific Signal and Information Processing Association Annual Summit and Conference (APSIPA ASC)},
   year      = {2026},
+  eprint    = {2609.07200},
+  archivePrefix = {arXiv},
+  primaryClass = {cs.SD},
+  url       = {https://arxiv.org/abs/2609.07200},
   note      = {to appear}
 }
 ```

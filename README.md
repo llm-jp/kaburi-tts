@@ -4,7 +4,7 @@
 
 [![English](https://img.shields.io/badge/README-English-red.svg)](README-en.md)
 
-📑 Paper (APSIPA ASC 2026, to appear) | [🤗 Model](https://huggingface.co/llm-jp/kaburi-tts) | [🖥️ Demo](https://llm-jp.github.io/kaburi-tts)
+[📑 Paper](https://arxiv.org/abs/2609.07200) (APSIPA ASC 2026, to appear) | [🤗 Model](https://huggingface.co/llm-jp/kaburi-tts) | [🖥️ Demo](https://llm-jp.github.io/kaburi-tts)
 
 **KABURI-TTS** は、2 話者の日本語対話音声を左右 2 チャンネルで同時に生成する対話音声合成システムです。相槌・重なり（**かぶり**）・間を含む対話特有のタイミング構造を、テキストのみから再現できます。
 
@@ -151,7 +151,7 @@ uv run scripts/kaburi_cli.py assets/sample_dialogue.txt --ref-pack refpack_refin
 
 ## 引用
 
-本成果は下記の論文として発表予定です（**to appear**）。
+本成果は APSIPA ASC 2026 採録論文です（**to appear**）。プレプリントは [arXiv:2609.07200](https://arxiv.org/abs/2609.07200) で公開しています。
 
 > Ryuichiro Higashinaka, Shinnosuke Takamichi, and Tetsuji Ogawa. "KABURI-TTS: Phoneme-Keyed Activity-conditioned Bi-channel Utterance Rendering for Interaction." In *Proceedings of the 2026 Asia Pacific Signal and Information Processing Association Annual Summit and Conference (APSIPA ASC)*, 2026. (to appear)
 
@@ -161,6 +161,10 @@ uv run scripts/kaburi_cli.py assets/sample_dialogue.txt --ref-pack refpack_refin
   author    = {Higashinaka, Ryuichiro and Takamichi, Shinnosuke and Ogawa, Tetsuji},
   booktitle = {Proceedings of the 2026 Asia Pacific Signal and Information Processing Association Annual Summit and Conference (APSIPA ASC)},
   year      = {2026},
+  eprint    = {2609.07200},
+  archivePrefix = {arXiv},
+  primaryClass = {cs.SD},
+  url       = {https://arxiv.org/abs/2609.07200},
   note      = {to appear}
 }
 ```
